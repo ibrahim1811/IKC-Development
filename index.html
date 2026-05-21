@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, orderBy, query, serverTimestamp, deleteDoc, doc }
+  import { getFirestore, collection, addDoc, getDocs, orderBy, query, serverTimestamp, deleteDoc, doc, updateDoc }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -33,6 +33,7 @@
   window._serverTimestamp = serverTimestamp;
   window._deleteDoc = deleteDoc;
   window._doc = doc;
+  window._updateDoc = updateDoc;
   window._ADMIN_PASS = ADMIN_PASS;
   window._firebaseReady = true;
   document.dispatchEvent(new Event("firebaseReady"));
@@ -1281,6 +1282,24 @@ footer{
   border-color:#ef4444;
 }
 
+.btn-edit{
+  background:rgba(59,130,246,0.1);
+  border:1px solid rgba(59,130,246,0.3);
+  color:#3b82f6;
+  padding:8px 16px;
+  border-radius:var(--r-sm);
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  font-family:var(--font-body);
+  transition:all 0.3s ease;
+}
+
+.btn-edit:hover{
+  background:rgba(59,130,246,0.2);
+  border-color:#3b82f6;
+}
+
 .error-message{
   color:#ef4444;
   font-size:13px;
@@ -1902,7 +1921,10 @@ footer{
           <button type="button" class="btn-primary" style="width:100%" onclick="publishProject()">
             <span id="admin-publish-project">Ekle</span>
           </button>
-          
+          <button type="button" id="cancel-edit-project" class="btn-secondary" style="width:100%;margin-top:8px;display:none" onclick="cancelEditProject()">
+            İptal
+          </button>
+
           <div class="admin-list" id="admin-prj-list"></div>
         </div>
       </div>
@@ -1940,9 +1962,12 @@ footer{
             <input type="text" id="srv-price-en" class="form-input" placeholder="Starting from $750">
           </div>
           <button type="button" class="btn-primary" style="width:100%" onclick="publishService()">
-            <span>Hizmeti Ekle</span>
+            <span id="admin-publish-service">Hizmeti Ekle</span>
           </button>
-          
+          <button type="button" id="cancel-edit-service" class="btn-secondary" style="width:100%;margin-top:8px;display:none" onclick="cancelEditService()">
+            İptal
+          </button>
+
           <div class="admin-list" id="admin-srv-list"></div>
         </div>
       </div>
@@ -2037,6 +2062,8 @@ let projects = [];
 let services = [];
 let aboutData = null;
 let contactData = null;
+let editingProjectId = null;
+let editingServiceId = null;
 
 // ═══════════════════════════════════════════════════════════════
 // PAGE LOADER
@@ -2612,7 +2639,7 @@ function publishProject() {
     alert(isEN ? "Firebase not ready." : "Firebase hazır değil.");
     return;
   }
-  
+
   const name = document.getElementById('pr-name').value.trim();
   const tag = document.getElementById('pr-tag').value.trim();
   const descTR = document.getElementById('pr-desc-tr').value.trim();
@@ -2620,28 +2647,59 @@ function publishProject() {
   const emoji = document.getElementById('pr-emoji').value.trim();
   const color = document.getElementById('pr-color').value;
   const link = document.getElementById('pr-link').value.trim();
-  
+
   if (!name || !descTR) {
     alert(isEN ? "Project name and TR description are required." : "Proje adı ve TR açıklama zorunlu.");
     return;
   }
-  
-  window._addDoc(window._col(window._db, 'portfolio'), {
-    name,
-    tag,
-    descTR,
-    descEN,
-    emoji,
-    color,
-    link,
-    createdAt: window._serverTimestamp()
-  }).then(() => {
-    ['pr-name', 'pr-tag', 'pr-desc-tr', 'pr-desc-en', 'pr-emoji', 'pr-link'].forEach(id =>
-      document.getElementById(id).value = ''
-    );
-    document.getElementById('pr-color').value = '#eef4fb';
-    loadProjects();
-  }).catch(e => alert("Error: " + e.message));
+
+  const data = { name, tag, descTR, descEN, emoji, color, link };
+
+  if (editingProjectId) {
+    window._updateDoc(window._doc(window._db, 'portfolio', editingProjectId), data).then(() => {
+      cancelEditProject();
+      loadProjects();
+    }).catch(e => alert("Error: " + e.message));
+  } else {
+    window._addDoc(window._col(window._db, 'portfolio'), {
+      ...data,
+      createdAt: window._serverTimestamp()
+    }).then(() => {
+      ['pr-name', 'pr-tag', 'pr-desc-tr', 'pr-desc-en', 'pr-emoji', 'pr-link'].forEach(id =>
+        document.getElementById(id).value = ''
+      );
+      document.getElementById('pr-color').value = '#eef4fb';
+      loadProjects();
+    }).catch(e => alert("Error: " + e.message));
+  }
+}
+
+function editProject(id) {
+  const p = projects.find(x => x.id === id);
+  if (!p) return;
+
+  editingProjectId = id;
+  document.getElementById('pr-name').value = p.name || '';
+  document.getElementById('pr-tag').value = p.tag || '';
+  document.getElementById('pr-desc-tr').value = p.descTR || '';
+  document.getElementById('pr-desc-en').value = p.descEN || '';
+  document.getElementById('pr-emoji').value = p.emoji || '';
+  document.getElementById('pr-color').value = p.color || '#eef4fb';
+  document.getElementById('pr-link').value = p.link || '';
+
+  document.getElementById('admin-publish-project').textContent = 'Güncelle';
+  document.getElementById('cancel-edit-project').style.display = 'block';
+  document.getElementById('pr-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function cancelEditProject() {
+  editingProjectId = null;
+  ['pr-name', 'pr-tag', 'pr-desc-tr', 'pr-desc-en', 'pr-emoji', 'pr-link'].forEach(id =>
+    document.getElementById(id).value = ''
+  );
+  document.getElementById('pr-color').value = '#eef4fb';
+  document.getElementById('admin-publish-project').textContent = 'Ekle';
+  document.getElementById('cancel-edit-project').style.display = 'none';
 }
 
 function renderAdminPrjList() {
@@ -2660,7 +2718,10 @@ function renderAdminPrjList() {
           <div class="admin-list-title">${p.emoji || ''} ${p.name}</div>
           <div class="admin-list-date">${p.tag || ''}</div>
         </div>
-        <button class="btn-delete" onclick="deleteProject('${p.id}')">${isEN ? 'Delete' : 'Sil'}</button>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn-edit" onclick="editProject('${p.id}')">${isEN ? 'Edit' : 'Düzenle'}</button>
+          <button type="button" class="btn-delete" onclick="deleteProject('${p.id}')">${isEN ? 'Delete' : 'Sil'}</button>
+        </div>
       </div>
     `).join('');
 }
@@ -2750,7 +2811,7 @@ function publishService() {
     alert("Firebase hazır değil.");
     return;
   }
-  
+
   const emoji = document.getElementById('srv-emoji').value.trim();
   const titleTR = document.getElementById('srv-title-tr').value.trim();
   const titleEN = document.getElementById('srv-title-en').value.trim();
@@ -2758,21 +2819,57 @@ function publishService() {
   const descEN = document.getElementById('srv-desc-en').value.trim();
   const priceTR = document.getElementById('srv-price-tr').value.trim();
   const priceEN = document.getElementById('srv-price-en').value.trim();
-  
+
   if (!titleTR || !descTR || !priceTR) {
     alert("Başlık (TR), açıklama (TR) ve fiyat (TR) zorunlu.");
     return;
   }
-  
-  window._addDoc(window._col(window._db, 'services'), {
-    emoji, titleTR, titleEN, descTR, descEN, priceTR, priceEN,
-    createdAt: window._serverTimestamp()
-  }).then(() => {
-    ['srv-emoji', 'srv-title-tr', 'srv-title-en', 'srv-desc-tr', 'srv-desc-en', 'srv-price-tr', 'srv-price-en'].forEach(id =>
-      document.getElementById(id).value = ''
-    );
-    loadServices();
-  }).catch(e => alert("Hata: " + e.message));
+
+  const data = { emoji, titleTR, titleEN, descTR, descEN, priceTR, priceEN };
+
+  if (editingServiceId) {
+    window._updateDoc(window._doc(window._db, 'services', editingServiceId), data).then(() => {
+      cancelEditService();
+      loadServices();
+    }).catch(e => alert("Hata: " + e.message));
+  } else {
+    window._addDoc(window._col(window._db, 'services'), {
+      ...data,
+      createdAt: window._serverTimestamp()
+    }).then(() => {
+      ['srv-emoji', 'srv-title-tr', 'srv-title-en', 'srv-desc-tr', 'srv-desc-en', 'srv-price-tr', 'srv-price-en'].forEach(id =>
+        document.getElementById(id).value = ''
+      );
+      loadServices();
+    }).catch(e => alert("Hata: " + e.message));
+  }
+}
+
+function editService(id) {
+  const s = services.find(x => x.id === id);
+  if (!s) return;
+
+  editingServiceId = id;
+  document.getElementById('srv-emoji').value = s.emoji || '';
+  document.getElementById('srv-title-tr').value = s.titleTR || '';
+  document.getElementById('srv-title-en').value = s.titleEN || '';
+  document.getElementById('srv-desc-tr').value = s.descTR || '';
+  document.getElementById('srv-desc-en').value = s.descEN || '';
+  document.getElementById('srv-price-tr').value = s.priceTR || '';
+  document.getElementById('srv-price-en').value = s.priceEN || '';
+
+  document.getElementById('admin-publish-service').textContent = 'Güncelle';
+  document.getElementById('cancel-edit-service').style.display = 'block';
+  document.getElementById('srv-emoji').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function cancelEditService() {
+  editingServiceId = null;
+  ['srv-emoji', 'srv-title-tr', 'srv-title-en', 'srv-desc-tr', 'srv-desc-en', 'srv-price-tr', 'srv-price-en'].forEach(id =>
+    document.getElementById(id).value = ''
+  );
+  document.getElementById('admin-publish-service').textContent = 'Hizmeti Ekle';
+  document.getElementById('cancel-edit-service').style.display = 'none';
 }
 
 function renderAdminSrvList() {
@@ -2791,7 +2888,10 @@ function renderAdminSrvList() {
           <div class="admin-list-title">${s.emoji || ''} ${s.titleTR}</div>
           <div class="admin-list-date">${s.priceTR || ''}</div>
         </div>
-        <button class="btn-delete" onclick="deleteService('${s.id}')">Sil</button>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn-edit" onclick="editService('${s.id}')">Düzenle</button>
+          <button type="button" class="btn-delete" onclick="deleteService('${s.id}')">Sil</button>
+        </div>
       </div>
     `).join('');
 }
