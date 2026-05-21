@@ -2884,12 +2884,24 @@ function saveAbout() {
     }).then(() => {
       alert("Hakkımda metni güncellendi!");
       loadAbout();
-    }).catch(e => alert("Hata: " + e.message));
+    }).catch(e => {
+      if (e.code === 'permission-denied') {
+        alert("Hata: Firebase izin reddedildi.\n\nFirebase Console → Firestore → Rules kısmında okuma/yazma kurallarını güncelleyin.");
+      } else {
+        alert("Hata: " + e.message);
+      }
+    });
   } else {
     window._addDoc(window._col(window._db, 'about'), data).then(() => {
       alert("Hakkımda metni kaydedildi!");
       loadAbout();
-    }).catch(e => alert("Hata: " + e.message));
+    }).catch(e => {
+      if (e.code === 'permission-denied') {
+        alert("Hata: Firebase izin reddedildi.\n\nFirebase Console → Firestore → Rules kısmında okuma/yazma kurallarını güncelleyin.");
+      } else {
+        alert("Hata: " + e.message);
+      }
+    });
   }
 }
 
@@ -2964,12 +2976,24 @@ function saveContact() {
     }).then(() => {
       alert("İletişim bilgileri güncellendi!");
       loadContact();
-    }).catch(e => alert("Hata: " + e.message));
+    }).catch(e => {
+      if (e.code === 'permission-denied') {
+        alert("Hata: Firebase izin reddedildi.\n\nFirebase Console → Firestore → Rules kısmında okuma/yazma kurallarını güncelleyin.");
+      } else {
+        alert("Hata: " + e.message);
+      }
+    });
   } else {
     window._addDoc(window._col(window._db, 'contact'), data).then(() => {
       alert("İletişim bilgileri kaydedildi!");
       loadContact();
-    }).catch(e => alert("Hata: " + e.message));
+    }).catch(e => {
+      if (e.code === 'permission-denied') {
+        alert("Hata: Firebase izin reddedildi.\n\nFirebase Console → Firestore → Rules kısmında okuma/yazma kurallarını güncelleyin.");
+      } else {
+        alert("Hata: " + e.message);
+      }
+    });
   }
 }
 
