@@ -1806,7 +1806,7 @@ footer{
 <!-- Blog Modal -->
 <div class="modal-overlay" id="blog-modal" onclick="closeBlogModal(event)">
   <div class="modal">
-    <button class="modal-close" onclick="closeBlogModal(event)">×</button>
+    <button type="button" class="modal-close" onclick="closeBlogModal(event)">×</button>
     <h2 id="m-title"></h2>
     <div class="modal-meta" id="m-date"></div>
     <div class="modal-body" id="m-body"></div>
@@ -1816,7 +1816,7 @@ footer{
 <!-- Admin Modal -->
 <div class="modal-overlay" id="admin-bg" onclick="closeAdminIfBg(event)">
   <div class="modal">
-    <button class="modal-close" onclick="closeAdmin()">×</button>
+    <button type="button" class="modal-close" onclick="closeAdmin()">×</button>
     
     <!-- Login View -->
     <div id="admin-login-view">
@@ -1826,7 +1826,7 @@ footer{
         <input type="password" id="admin-pw" class="form-input" onkeypress="if(event.key==='Enter')checkPass()">
         <div class="error-message" id="pw-err">Yanlış şifre!</div>
       </div>
-      <button class="btn-primary" style="width:100%;margin-top:24px" onclick="checkPass()">
+      <button type="button" class="btn-primary" style="width:100%;margin-top:24px" onclick="checkPass()">
         <span id="admin-login-btn">Giriş Yap</span>
       </button>
     </div>
@@ -1859,7 +1859,7 @@ footer{
             <label class="form-label" id="admin-post-body">İçerik</label>
             <textarea id="p-body" class="form-textarea" style="min-height:200px"></textarea>
           </div>
-          <button class="btn-primary" style="width:100%" onclick="publishPost()">
+          <button type="button" class="btn-primary" style="width:100%" onclick="publishPost()">
             <span id="admin-publish-post">Yayınla</span>
           </button>
           
@@ -1899,7 +1899,7 @@ footer{
             <label class="form-label" id="admin-prj-link">Link (opsiyonel)</label>
             <input type="url" id="pr-link" class="form-input" placeholder="https://">
           </div>
-          <button class="btn-primary" style="width:100%" onclick="publishProject()">
+          <button type="button" class="btn-primary" style="width:100%" onclick="publishProject()">
             <span id="admin-publish-project">Ekle</span>
           </button>
           
@@ -1939,7 +1939,7 @@ footer{
             <label class="form-label">Fiyat (EN)</label>
             <input type="text" id="srv-price-en" class="form-input" placeholder="Starting from $750">
           </div>
-          <button class="btn-primary" style="width:100%" onclick="publishService()">
+          <button type="button" class="btn-primary" style="width:100%" onclick="publishService()">
             <span>Hizmeti Ekle</span>
           </button>
           
@@ -1981,7 +1981,7 @@ footer{
             <textarea id="about-p2-en" class="form-textarea" style="min-height:100px">I analyze each project in detail, choose the most suitable technology stack, and develop scalable, sustainable solutions using best practices.</textarea>
           </div>
           
-          <button class="btn-primary" style="width:100%;margin-top:20px" onclick="saveAbout()">
+          <button type="button" class="btn-primary" style="width:100%;margin-top:20px" onclick="saveAbout()">
             <span>Hakkımda Metnini Kaydet</span>
           </button>
         </div>
@@ -2012,7 +2012,7 @@ footer{
             <input type="text" id="contact-location-en" class="form-input" value="Istanbul, Turkey">
           </div>
           
-          <button class="btn-primary" style="width:100%;margin-top:20px" onclick="saveContact()">
+          <button type="button" class="btn-primary" style="width:100%;margin-top:20px" onclick="saveContact()">
             <span>İletişim Bilgilerini Kaydet</span>
           </button>
         </div>
@@ -2398,13 +2398,6 @@ function openBlogModal(id) {
   document.getElementById('m-date').textContent = formatDate(p.createdAt) + (p.tag ? ' · ' + p.tag : '');
   document.getElementById('m-body').textContent = p.body;
   document.getElementById('blog-modal').classList.add('open');
-  
-  gsap.from('#blog-modal .modal', {
-    scale: 0.9,
-    opacity: 0,
-    duration: 0.3,
-    ease: 'back.out(1.7)'
-  });
 }
 
 function closeBlogModal(e) {
