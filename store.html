@@ -9,17 +9,17 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyC7WYwRYWl5prQvEckDb7sZsWK4xbGAnUw",
-    authDomain: "ikcdeveloper-12c63.firebaseapp.com",
-    projectId: "ikcdeveloper-12c63",
-    storageBucket: "ikcdeveloper-12c63.firebasestorage.app",
-    messagingSenderId: "453651663518",
-    appId: "1:453651663518:web:9d68a81abf91ef0ffe898f"
+  const storeConfig = {
+    apiKey: "AIzaSyBKJVo4cH2xAT9D2atYX0efNMGRyXXW4u8",
+    authDomain: "ikc-store.firebaseapp.com",
+    projectId: "ikc-store",
+    storageBucket: "ikc-store.firebasestorage.app",
+    messagingSenderId: "508538629679",
+    appId: "1:508538629679:web:2fcb60b389fd822e4b60da"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  const storeApp = initializeApp(storeConfig, "ikc-store");
+  const db = getFirestore(storeApp);
 
   async function loadApk() {
     const btn = document.getElementById('downloadBtn');
@@ -31,7 +31,8 @@
       const data = snap.docs[0].data();
       if (data.apkUrl) {
         btn.href = data.apkUrl;
-        btn.removeAttribute('aria-disabled');
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
         btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> APK İndir${data.currentVersion ? ' · v' + data.currentVersion : ''}`;
         if (data.apkSize) sizeEl.textContent = (data.apkSize / 1024 / 1024).toFixed(1) + ' MB';
       } else {
@@ -271,6 +272,28 @@ main{
   border:1px solid var(--border);
   object-fit:contain;
   display:block;
+  cursor:zoom-in;
+  transition:opacity .2s;
+}
+.scan-img:hover{opacity:.85}
+
+.lightbox{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.92);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+  cursor:zoom-out;
+}
+.lightbox.open{display:flex}
+.lightbox img{
+  max-width:90vw;
+  max-height:90vh;
+  border-radius:12px;
+  object-fit:contain;
+  box-shadow:0 0 60px rgba(0,0,0,0.8);
 }
 
 .divider{
@@ -358,13 +381,23 @@ footer a{color:var(--primary);text-decoration:none}
 
   <div class="scan-section">
     <div class="scan-title">Virüs Tarama Sonucu</div>
-    <img src="Scan.png" alt="Virüs Tarama Sonucu" class="scan-img">
+    <img src="Scan.png" alt="Virüs Tarama Sonucu" class="scan-img" onclick="document.getElementById('lb').classList.add('open')">
   </div>
 </main>
 
 <footer>
   &copy; 2026 IKC Development · <a href="index.html">ikcdeveloper.com</a>
 </footer>
+
+<div id="lb" class="lightbox" onclick="this.classList.remove('open')">
+  <img src="Scan.png" alt="Virüs Tarama Sonucu">
+</div>
+
+<script>
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.getElementById('lb').classList.remove('open');
+  });
+</script>
 
 </body>
 </html>
