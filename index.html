@@ -1512,6 +1512,7 @@ footer{
     <a href="javascript:void(0)" onclick="window.scrollTo({top:0,behavior:'smooth'})" class="logo">IKC<sub>DEV</sub></a>
     <ul class="nav-links">
       <li><a href="#services">Hizmetler</a></li>
+      <li><a href="#apps">Uygulamalar</a></li>
       <li><a href="#projects">Projeler</a></li>
       <li><a href="#about">Hakkımda</a></li>
       <li><a href="#blog">Blog</a></li>
@@ -1610,16 +1611,74 @@ footer{
 
     </div>
 
-    <a href="store.html" target="_blank" class="store-cta animate-on-scroll" style="margin-top:24px">
-      <div class="store-cta-left">
-        <div class="store-cta-icon">🏪</div>
-        <div>
-          <div class="store-cta-title">Kendi Geliştirdiğim Uygulamalar Burada</div>
-          <div class="store-cta-desc">IKC Store'da tüm uygulamalarımı keşfedebilir, ücretsiz indirebilirsin. Sürekli güncelleniyor.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Apps Section -->
+<section id="apps">
+  <div class="section-container">
+    <div class="section-header animate-on-scroll">
+      <div class="section-tag">Mobil Uygulamalar</div>
+      <h2 class="section-title">IKC Store</h2>
+      <p class="section-subtitle">Geliştirdiğim tüm Android uygulamaları tek çatı altında. Ücretsiz, güvenli ve sürekli güncelleniyor.</p>
+    </div>
+
+    <div class="apps-showcase">
+      <div class="apps-left animate-on-scroll fade-in-left">
+        <div class="apps-feature">
+          <div class="apps-feature-icon">📦</div>
+          <div>
+            <div class="apps-feature-title">Tek Yerden İndir</div>
+            <div class="apps-feature-desc">Tüm IKC uygulamalarına tek noktadan eriş, kolayca kur.</div>
+          </div>
+        </div>
+        <div class="apps-feature">
+          <div class="apps-feature-icon">🔄</div>
+          <div>
+            <div class="apps-feature-title">Otomatik Güncelleme</div>
+            <div class="apps-feature-desc">Yeni sürümler çıktığında anında bildirim al, tek tıkla güncelle.</div>
+          </div>
+        </div>
+        <div class="apps-feature">
+          <div class="apps-feature-icon">🛡️</div>
+          <div>
+            <div class="apps-feature-title">Güvenli & Ücretsiz</div>
+            <div class="apps-feature-desc">Virüs taramasından geçmiş, %100 ücretsiz uygulamalar.</div>
+          </div>
+        </div>
+        <a href="store.html" target="_blank" class="apps-download-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          IKC Store'u İndir
+        </a>
+      </div>
+
+      <div class="apps-right animate-on-scroll fade-in-right">
+        <div class="apps-card">
+          <div class="apps-card-header">
+            <div class="apps-card-dot red"></div>
+            <div class="apps-card-dot yellow"></div>
+            <div class="apps-card-dot green"></div>
+            <span style="color:var(--text-muted);font-size:.8rem;margin-left:8px">IKC Store</span>
+          </div>
+          <div class="apps-card-body">
+            <div class="apps-card-icon">🏪</div>
+            <div class="apps-card-name">IKC Store</div>
+            <div class="apps-card-version">v1.0.0 · Android</div>
+            <div class="apps-card-tags">
+              <span class="apps-tag">Ücretsiz</span>
+              <span class="apps-tag">Türkçe</span>
+              <span class="apps-tag">Dark Mode</span>
+            </div>
+            <div class="apps-card-bar">
+              <div class="apps-card-bar-fill"></div>
+            </div>
+            <div style="font-size:.75rem;color:var(--text-muted);text-align:center">İndiriliyor...</div>
+          </div>
         </div>
       </div>
-      <div class="store-cta-btn">IKC Store'u Aç →</div>
-    </a>
+    </div>
   </div>
 </section>
 
@@ -3127,6 +3186,36 @@ document.addEventListener('firebaseReady', () => {
 </script>
 
 <style>
+/* Apps Section */
+.apps-showcase{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.apps-left{display:flex;flex-direction:column;gap:32px}
+.apps-feature{display:flex;align-items:flex-start;gap:18px}
+.apps-feature-icon{width:48px;height:48px;background:linear-gradient(135deg,rgba(255,87,34,0.12),rgba(255,152,0,0.08));border:1px solid rgba(255,87,34,0.25);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.apps-feature-title{font-family:var(--font-heading);font-weight:600;font-size:1rem;margin-bottom:4px}
+.apps-feature-desc{color:var(--text-secondary);font-size:.9rem;line-height:1.6}
+.apps-download-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;text-decoration:none;font-family:var(--font-heading);font-weight:600;font-size:1rem;padding:16px 32px;border-radius:50px;box-shadow:0 4px 24px rgba(255,87,34,0.35);transition:transform .2s,box-shadow .2s;width:fit-content}
+.apps-download-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,87,34,0.5)}
+.apps-right{display:flex;justify-content:center}
+.apps-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;width:100%;max-width:340px;box-shadow:0 24px 60px rgba(0,0,0,0.4)}
+.apps-card-header{background:var(--surface-light);padding:12px 16px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border)}
+.apps-card-dot{width:10px;height:10px;border-radius:50%}
+.apps-card-dot.red{background:#ff5f57}
+.apps-card-dot.yellow{background:#febc2e}
+.apps-card-dot.green{background:#28c840}
+.apps-card-body{padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.apps-card-icon{font-size:52px}
+.apps-card-name{font-family:var(--font-heading);font-weight:700;font-size:1.2rem}
+.apps-card-version{color:var(--text-muted);font-size:.8rem}
+.apps-card-tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.apps-tag{background:rgba(255,87,34,0.1);border:1px solid rgba(255,87,34,0.2);color:var(--primary);font-size:.75rem;font-weight:600;padding:4px 12px;border-radius:50px}
+.apps-card-bar{height:6px;width:100%;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin-top:8px}
+.apps-card-bar-fill{height:100%;width:65%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:3px;animation:barAnim 2s ease-in-out infinite alternate}
+@keyframes barAnim{0%{width:40%}100%{width:80%}}
+@media(max-width:768px){
+  .apps-showcase{grid-template-columns:1fr;gap:40px}
+  .apps-download-btn{width:100%;justify-content:center}
+}
+
 /* IKC Store CTA Card */
 .store-cta{
   grid-column:1/-1;
