@@ -5,6 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IKC Store - Uygulama İndir</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC7WYwRYWl5prQvEckDb7sZsWK4xbGAnUw",
+    authDomain: "ikcdeveloper-12c63.firebaseapp.com",
+    projectId: "ikcdeveloper-12c63",
+    storageBucket: "ikcdeveloper-12c63.firebasestorage.app",
+    messagingSenderId: "453651663518",
+    appId: "1:453651663518:web:9d68a81abf91ef0ffe898f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function loadApk() {
+    const btn = document.getElementById('downloadBtn');
+    const sizeEl = document.getElementById('apkSize');
+    try {
+      const q = query(collection(db, 'apps'), where('packageName', '==', 'com.ikcstoreapp'));
+      const snap = await getDocs(q);
+      if (snap.empty) { btn.textContent = 'APK bulunamadı'; return; }
+      const data = snap.docs[0].data();
+      if (data.apkUrl) {
+        btn.href = data.apkUrl;
+        btn.removeAttribute('aria-disabled');
+        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> APK İndir${data.currentVersion ? ' · v' + data.currentVersion : ''}`;
+        if (data.apkSize) sizeEl.textContent = (data.apkSize / 1024 / 1024).toFixed(1) + ' MB';
+      } else {
+        btn.textContent = 'APK henüz yüklenmedi';
+      }
+    } catch(e) {
+      console.error(e);
+      btn.textContent = 'Yüklenirken hata oluştu';
+    }
+  }
+
+  loadApk();
+</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
@@ -22,7 +62,6 @@
 }
 
 /* Değiştir: Kendi APK URL'ini buraya yaz */
-:root{ --APK-URL: "APK_URL_BURAYA"; }
 
 html,body{
   background:var(--bg-dark);
@@ -277,15 +316,10 @@ footer a{color:var(--primary);text-decoration:none}
     IKC geliştirici ekibinin sunduğu özel uygulama mağazası. Tüm IKC uygulamalarını tek yerden indir, güncelle ve yönet.
   </p>
 
-  <!-- APK_URL değerini aşağıdaki href="..." kısmına yaz -->
-  <a href="APK_URL_BURAYA" download="IKCStore.apk" class="download-btn">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-      <polyline points="7 10 12 15 17 10"/>
-      <line x1="12" y1="15" x2="12" y2="3"/>
-    </svg>
-    APK İndir
+  <a id="downloadBtn" href="#" download="IKCStore.apk" class="download-btn" style="opacity:.6;pointer-events:none">
+    Yükleniyor...
   </a>
+  <small id="apkSize" style="color:var(--text-secondary);margin-top:-16px;font-size:.85rem"></small>
 
   <div class="warning-card">
     <div class="warning-icon">⚠️</div>
@@ -324,13 +358,7 @@ footer a{color:var(--primary);text-decoration:none}
 
   <div class="scan-section">
     <div class="scan-title">Virüs Tarama Sonucu</div>
-    <!-- Virüs taraması ekran görüntüsünü buraya ekle: src="scan.png" yap -->
-    <img
-      src="scan.png"
-      alt="Virüs Tarama Sonucu"
-      class="scan-img"
-      onerror="this.outerHTML='<div style=\'width:100%;max-width:480px;height:200px;border:2px dashed rgba(255,255,255,0.15);border-radius:16px;display:flex;align-items:center;justify-content:center;color:#808080;font-size:.9rem\'>Virüs taraması görseli buraya eklenecek</div>'"
-    >
+    <img src="Scan.png" alt="Virüs Tarama Sonucu" class="scan-img">
   </div>
 </main>
 
