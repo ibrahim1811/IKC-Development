@@ -1607,6 +1607,17 @@ footer{
         <p class="service-desc" id="srv6-desc">Teknoloji seçimi, mimari tasarım ve proje yönetimi danışmanlığı.</p>
         <div class="service-price" id="srv6-price">₺5.000'den başlayan fiyatlar</div>
       </div>
+
+      <a href="store.html" target="_blank" class="store-cta animate-on-scroll">
+        <div class="store-cta-left">
+          <div class="store-cta-icon">🏪</div>
+          <div>
+            <div class="store-cta-title">Kendi Geliştirdiğim Uygulamalar Burada</div>
+            <div class="store-cta-desc">IKC Store'da tüm uygulamalarımı keşfedebilir, ücretsiz indirebilirsin. Sürekli güncelleniyor.</div>
+          </div>
+        </div>
+        <div class="store-cta-btn">IKC Store'u Aç →</div>
+      </a>
     </div>
   </div>
 </section>
@@ -3115,6 +3126,67 @@ document.addEventListener('firebaseReady', () => {
 </script>
 
 <style>
+/* IKC Store CTA Card */
+.store-cta{
+  grid-column:1/-1;
+  background:linear-gradient(135deg,rgba(255,87,34,0.12),rgba(255,152,0,0.08));
+  border:1px solid rgba(255,87,34,0.3);
+  border-radius:var(--r-lg);
+  padding:40px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  position:relative;
+  overflow:hidden;
+  text-decoration:none;
+  transition:border-color 0.3s,box-shadow 0.3s;
+}
+.store-cta::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:3px;
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+}
+.store-cta:hover{
+  border-color:rgba(255,87,34,0.6);
+  box-shadow:0 20px 50px rgba(255,87,34,0.15);
+}
+.store-cta-left{display:flex;align-items:center;gap:20px}
+.store-cta-icon{
+  width:64px;height:64px;
+  background:linear-gradient(135deg,rgba(255,87,34,0.2),rgba(255,152,0,0.15));
+  border:1px solid rgba(255,87,34,0.4);
+  border-radius:18px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;flex-shrink:0;
+}
+.store-cta-title{
+  font-family:var(--font-heading);
+  font-size:1.35rem;font-weight:700;
+  color:var(--text-primary);margin-bottom:6px;
+}
+.store-cta-desc{color:var(--text-secondary);font-size:.9rem;line-height:1.5}
+.store-cta-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;font-family:var(--font-heading);
+  font-size:.95rem;font-weight:600;
+  padding:14px 28px;border-radius:50px;
+  white-space:nowrap;flex-shrink:0;
+  box-shadow:0 4px 20px rgba(255,87,34,0.3);
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.store-cta:hover .store-cta-btn{
+  transform:translateY(-2px);
+  box-shadow:0 8px 28px rgba(255,87,34,0.45);
+}
+@media(max-width:600px){
+  .store-cta{flex-direction:column;align-items:flex-start;padding:28px}
+  .store-cta-btn{width:100%;justify-content:center}
+}
+
 @media(max-width:768px){
   .mobile-app-banner{
     position:fixed;
