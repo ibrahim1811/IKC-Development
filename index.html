@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, orderBy, query, serverTimestamp, deleteDoc, doc, updateDoc }
+  import { getFirestore, collection, addDoc, getDocs, orderBy, query, serverTimestamp, deleteDoc, doc, updateDoc, setDoc, getDoc, onSnapshot }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -34,6 +34,9 @@
   window._deleteDoc = deleteDoc;
   window._doc = doc;
   window._updateDoc = updateDoc;
+  window._setDoc = setDoc;
+  window._getDoc = getDoc;
+  window._onSnapshot = onSnapshot;
   window._ADMIN_PASS = ADMIN_PASS;
   window._firebaseReady = true;
   document.dispatchEvent(new Event("firebaseReady"));
@@ -1691,7 +1694,7 @@ footer{
     <div class="section-header animate-on-scroll">
       <div class="section-tag">Discord Botu</div>
       <h2 class="section-title">Bürküt</h2>
-      <p class="section-subtitle">Sunucun için müzik, moderasyon ve web yönetim paneli tek bir botta. Tek tıkla ekle, hemen kullan.</p>
+      <p class="section-subtitle">Sunucun için müzik ve moderasyon tek bir botta. Tek tıkla ekle, hemen kullan.</p>
     </div>
 
     <div class="apps-showcase">
@@ -1711,13 +1714,13 @@ footer{
           </div>
         </div>
         <div class="apps-feature">
-          <div class="apps-feature-icon">🖥️</div>
+          <div class="apps-feature-icon">⚡</div>
           <div>
-            <div class="apps-feature-title">Web Yönetim Paneli</div>
-            <div class="apps-feature-desc">Ayarları, üyeleri ve kanalları Discord'a girmeden panelden yönet.</div>
+            <div class="apps-feature-title">Anında Kurulum</div>
+            <div class="apps-feature-desc">Tek tıkla sunucuna ekle, ek ayar gerekmeden hemen kullanmaya başla.</div>
           </div>
         </div>
-        <a href="https://discord.com/api/oauth2/authorize?client_id=1524156084405665976&permissions=8&scope=bot%20applications.commands" target="_blank" class="apps-download-btn">
+        <a id="burkut-invite-btn" href="https://discord.com/api/oauth2/authorize?client_id=1524156084405665976&permissions=8&scope=bot%20applications.commands" target="_blank" class="apps-download-btn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
           Sunucuna Ekle
         </a>
@@ -1741,9 +1744,9 @@ footer{
               <span class="apps-tag">Ücretsiz</span>
             </div>
             <div class="apps-card-bar">
-              <div class="apps-card-bar-fill" style="width:100%;animation:none;background:linear-gradient(90deg,#57f287,#3ba55c)"></div>
+              <div class="apps-card-bar-fill" id="burkut-status-bar" style="width:100%;animation:none;background:linear-gradient(90deg,#57f287,#3ba55c)"></div>
             </div>
-            <div style="font-size:.75rem;color:var(--text-muted);text-align:center">🟢 Çevrimiçi</div>
+            <div id="burkut-status-text" style="font-size:.75rem;color:var(--text-muted);text-align:center">🟢 Çevrimiçi</div>
           </div>
         </div>
       </div>
@@ -2001,6 +2004,7 @@ footer{
         <button class="admin-tab" id="tab-srv-btn" onclick="switchTab('srv')">Hizmetler</button>
         <button class="admin-tab" id="tab-about-btn" onclick="switchTab('about')">Hakkımda</button>
         <button class="admin-tab" id="tab-contact-btn" onclick="switchTab('contact')">İletişim</button>
+        <button class="admin-tab" id="tab-burkut-btn" onclick="switchTab('burkut')">Bürküt Bot</button>
       </div>
       
       <!-- Blog Tab -->
@@ -2181,6 +2185,21 @@ footer{
           <button type="button" class="btn-primary" style="width:100%;margin-top:20px" onclick="saveContact()">
             <span>İletişim Bilgilerini Kaydet</span>
           </button>
+        </div>
+      </div>
+
+      <!-- Bürküt Bot Tab -->
+      <div id="tab-burkut" style="display:none">
+        <div class="admin-section">
+          <h3>Bürküt Bot Durumu</h3>
+          <div class="form-group" style="display:flex;align-items:center;gap:12px">
+            <input type="checkbox" id="burkut-maintenance" style="width:20px;height:20px;cursor:pointer">
+            <label class="form-label" for="burkut-maintenance" style="margin:0;cursor:pointer">Bakım modu (sitede "Bakımda" olarak gösterilir)</label>
+          </div>
+          <button type="button" class="btn-primary" style="width:100%;margin-top:20px" onclick="saveBurkutStatus()">
+            <span>Kaydet</span>
+          </button>
+          <p style="margin-top:16px;font-size:.82rem;color:var(--text-muted)">Çevrimiçi/çevrimdışı durumu botun health endpoint'ine bakılarak otomatik tespit edilir. Bu toggle sadece manuel "bakımda" bilgisini site ziyaretçilerine göstermek içindir.</p>
         </div>
       </div>
     </div>
@@ -2878,17 +2897,20 @@ function switchTab(tab) {
   document.getElementById('tab-srv').style.display = tab === 'srv' ? 'block' : 'none';
   document.getElementById('tab-about').style.display = tab === 'about' ? 'block' : 'none';
   document.getElementById('tab-contact').style.display = tab === 'contact' ? 'block' : 'none';
-  
+  document.getElementById('tab-burkut').style.display = tab === 'burkut' ? 'block' : 'none';
+
   document.getElementById('tab-blog-btn').classList.toggle('active', tab === 'blog');
   document.getElementById('tab-prj-btn').classList.toggle('active', tab === 'prj');
   document.getElementById('tab-srv-btn').classList.toggle('active', tab === 'srv');
   document.getElementById('tab-about-btn').classList.toggle('active', tab === 'about');
   document.getElementById('tab-contact-btn').classList.toggle('active', tab === 'contact');
-  
+  document.getElementById('tab-burkut-btn').classList.toggle('active', tab === 'burkut');
+
   if (tab === 'prj') renderAdminPrjList();
   if (tab === 'srv') renderAdminSrvList();
   if (tab === 'about') fillAboutForm();
   if (tab === 'contact') fillContactForm();
+  if (tab === 'burkut') fillBurkutForm();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -3232,6 +3254,82 @@ function saveContact() {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// BÜRKÜT BOT STATUS
+// ═══════════════════════════════════════════════════════════════
+const BURKUT_HEALTH_URL = 'https://dcbot-w0p0.onrender.com/health';
+let burkutMaintenance = false;
+let burkutWatchStarted = false;
+
+function fillBurkutForm() {
+  if (!window._firebaseReady) {
+    document.addEventListener('firebaseReady', fillBurkutForm, { once: true });
+    return;
+  }
+  window._getDoc(window._doc(window._db, 'botStatus', 'burkut')).then(snap => {
+    const el = document.getElementById('burkut-maintenance');
+    if (el) el.checked = snap.exists() ? !!snap.data().maintenance : false;
+  });
+}
+
+function saveBurkutStatus() {
+  if (!window._firebaseReady) {
+    alert("Firebase hazır değil.");
+    return;
+  }
+  const maintenance = document.getElementById('burkut-maintenance').checked;
+  window._setDoc(window._doc(window._db, 'botStatus', 'burkut'), { maintenance }, { merge: true }).then(() => {
+    alert(maintenance ? "Bakım modu açıldı." : "Bakım modu kapatıldı.");
+  }).catch(e => {
+    if (e.code === 'permission-denied') {
+      alert("Hata: Firebase izin reddedildi.\n\nFirebase Console → Firestore → Rules kısmında okuma/yazma kurallarını güncelleyin.");
+    } else {
+      alert("Hata: " + e.message);
+    }
+  });
+}
+
+function updateBurkutBadge(online) {
+  const textEl = document.getElementById('burkut-status-text');
+  const barEl = document.getElementById('burkut-status-bar');
+  const inviteBtn = document.getElementById('burkut-invite-btn');
+  if (!textEl || !barEl) return;
+
+  if (burkutMaintenance) {
+    textEl.textContent = '🔧 Bakımda';
+    barEl.style.background = 'linear-gradient(90deg,#febc2e,#e6a70a)';
+    if (inviteBtn) { inviteBtn.style.opacity = '.5'; inviteBtn.style.pointerEvents = 'none'; }
+  } else if (online === false) {
+    textEl.textContent = '🔴 Çevrimdışı';
+    barEl.style.background = 'linear-gradient(90deg,#ff5f57,#c0392b)';
+    if (inviteBtn) { inviteBtn.style.opacity = '.5'; inviteBtn.style.pointerEvents = 'none'; }
+  } else {
+    textEl.textContent = '🟢 Çevrimiçi';
+    barEl.style.background = 'linear-gradient(90deg,#57f287,#3ba55c)';
+    if (inviteBtn) { inviteBtn.style.opacity = '1'; inviteBtn.style.pointerEvents = 'auto'; }
+  }
+}
+
+function checkBurkutLive() {
+  fetch(BURKUT_HEALTH_URL, { mode: 'no-cors', cache: 'no-store' })
+    .then(() => updateBurkutBadge(true))
+    .catch(() => updateBurkutBadge(false));
+}
+
+function watchBurkutStatus() {
+  if (burkutWatchStarted) return;
+  if (!window._firebaseReady) {
+    document.addEventListener('firebaseReady', watchBurkutStatus, { once: true });
+    return;
+  }
+  burkutWatchStarted = true;
+  window._onSnapshot(window._doc(window._db, 'botStatus', 'burkut'), snap => {
+    burkutMaintenance = snap.exists() ? !!snap.data().maintenance : false;
+    checkBurkutLive();
+  });
+  setInterval(checkBurkutLive, 60000);
+}
+
+// ═══════════════════════════════════════════════════════════════
 // INITIALIZATION
 // ═══════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
@@ -3243,6 +3341,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadServices();
   loadAbout();
   loadContact();
+  watchBurkutStatus();
 });
 
 document.addEventListener('firebaseReady', () => {
@@ -3251,6 +3350,7 @@ document.addEventListener('firebaseReady', () => {
   loadServices();
   loadAbout();
   loadContact();
+  watchBurkutStatus();
 });
 </script>
 
