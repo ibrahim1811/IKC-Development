@@ -3310,9 +3310,11 @@ function updateBurkutBadge(online) {
 }
 
 function checkBurkutLive() {
-  fetch(BURKUT_HEALTH_URL, { mode: 'no-cors', cache: 'no-store' })
-    .then(() => updateBurkutBadge(true))
-    .catch(() => updateBurkutBadge(false));
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10000);
+  fetch(BURKUT_HEALTH_URL, { cache: 'no-store', signal: controller.signal })
+    .then(res => { clearTimeout(timer); updateBurkutBadge(res.ok); })
+    .catch(() => { clearTimeout(timer); updateBurkutBadge(false); });
 }
 
 function watchBurkutStatus() {
