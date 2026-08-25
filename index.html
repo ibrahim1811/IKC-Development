@@ -3,13 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IKC Development - Software Solutions</title>
+<title>IKC Development - Web ve Mobil Yazılım Çözümleri</title>
+<meta name="description" content="IKC Development; web uygulama, mobil uygulama, UI/UX tasarım, e-ticaret ve API geliştirme hizmetleri sunar. Modern teknolojilerle işinizi dijital dünyada büyütüyoruz.">
+<meta name="keywords" content="web tasarım, mobil uygulama geliştirme, UI/UX tasarım, e-ticaret çözümleri, API geliştirme, yazılım danışmanlığı, IKC Development">
+<meta name="author" content="IKC Development">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ikc-development.web.app/">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ikc-development.web.app/">
+<meta property="og:title" content="IKC Development - Web ve Mobil Yazılım Çözümleri">
+<meta property="og:description" content="Web uygulama, mobil uygulama, UI/UX tasarım, e-ticaret ve API geliştirme hizmetleri. Modern teknolojilerle işinizi büyütüyoruz.">
+<meta property="og:image" content="https://ikc-development.web.app/og-image.png">
+<meta property="og:locale" content="tr_TR">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="IKC Development - Web ve Mobil Yazılım Çözümleri">
+<meta name="twitter:description" content="Web uygulama, mobil uygulama, UI/UX tasarım, e-ticaret ve API geliştirme hizmetleri.">
+<meta name="twitter:image" content="https://ikc-development.web.app/og-image.png">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="alternate icon" href="favicon.ico">
+
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9602322866141924" crossorigin="anonymous"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, orderBy, query, serverTimestamp, deleteDoc, doc, updateDoc, setDoc, getDoc, onSnapshot }
+  import { getFirestore, collection, addDoc, getDocs, orderBy, query, where, serverTimestamp, deleteDoc, doc, updateDoc, setDoc, getDoc, onSnapshot }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC7WYwRYWl5prQvEckDb7sZsWK4xbGAnUw",
@@ -23,7 +48,7 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const ADMIN_PASS = "413435";
+  const auth = getAuth(app);
 
   window._db = db;
   window._col = collection;
@@ -31,6 +56,7 @@
   window._getDocs = getDocs;
   window._orderBy = orderBy;
   window._query = query;
+  window._where = where;
   window._serverTimestamp = serverTimestamp;
   window._deleteDoc = deleteDoc;
   window._doc = doc;
@@ -38,7 +64,10 @@
   window._setDoc = setDoc;
   window._getDoc = getDoc;
   window._onSnapshot = onSnapshot;
-  window._ADMIN_PASS = ADMIN_PASS;
+  window._auth = auth;
+  window._signIn = signInWithEmailAndPassword;
+  window._signOut = signOut;
+  window._onAuthStateChanged = onAuthStateChanged;
   window._firebaseReady = true;
   document.dispatchEvent(new Event("firebaseReady"));
 </script>
@@ -1496,7 +1525,136 @@ footer{
   50%{width:100%;transform:translateX(0)}
   100%{width:100%;transform:translateX(200px)}
 }
+
+/* Sticky Mobile CTA */
+.sticky-cta{
+  display:none;
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:999;
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  padding:12px 16px;
+  padding-bottom:calc(12px + env(safe-area-inset-bottom));
+}
+.sticky-cta a{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  background:var(--primary);
+  color:#fff;
+  text-decoration:none;
+  font-weight:600;
+  font-size:15px;
+  padding:14px;
+  border-radius:var(--r-md);
+}
+@media (max-width:768px){
+  .sticky-cta{display:block}
+  body{padding-bottom:70px}
+}
+
+/* FAQ */
+.faq-list{max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.faq-question{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px;cursor:pointer;font-weight:600;font-size:16px;
+  transition:color 0.3s ease;
+}
+.faq-question:hover{color:var(--primary)}
+.faq-icon{font-size:20px;color:var(--primary);transition:transform 0.3s ease;flex-shrink:0;margin-left:16px}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height 0.35s ease}
+.faq-item.open .faq-answer{max-height:300px}
+.faq-answer-inner{padding:0 24px 20px;color:var(--text-secondary);line-height:1.7;font-size:15px}
+
+/* Testimonials */
+.testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.testimonial-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:28px;position:relative;
+}
+.testimonial-stars{color:var(--accent);font-size:16px;margin-bottom:16px;letter-spacing:2px}
+.testimonial-text{color:var(--text-secondary);line-height:1.7;font-size:15px;margin-bottom:20px}
+.testimonial-author{display:flex;align-items:center;gap:12px}
+.testimonial-avatar{
+  width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:#fff;font-size:16px;flex-shrink:0;
+}
+.testimonial-name{font-weight:600;font-size:14px}
+.testimonial-role{color:var(--text-muted);font-size:13px}
+
+/* Review submission form */
+.review-form-card{
+  max-width:560px;margin:48px auto 0;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:32px;
+}
+.review-form-card h3{font-family:var(--font-heading);font-size:19px;margin-bottom:20px;text-align:center}
+.star-picker{display:flex;gap:8px;justify-content:center;margin-bottom:20px;font-size:32px}
+.star-picker span{cursor:pointer;color:var(--border);transition:color .2s ease,transform .15s ease}
+.star-picker span.filled{color:var(--accent)}
+.star-picker span:hover{transform:scale(1.15)}
+.review-status{display:none;margin-top:16px;padding:12px;border-radius:var(--r-sm);font-size:14px;text-align:center}
+.review-status.success{background:rgba(87,242,135,0.1);color:#57f287;display:block}
+.review-status.error{background:rgba(237,66,69,0.1);color:#ed4245;display:block}
+.review-note{color:var(--text-muted);font-size:12px;text-align:center;margin-top:12px}
+
+/* Admin reviews list */
+.review-admin-item{
+  background:var(--surface-light);border:1px solid var(--border);
+  border-radius:var(--r-md);padding:16px;margin-bottom:12px;
+}
+.review-admin-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}
+.review-admin-stars{color:var(--accent);font-size:14px}
+.review-admin-email{color:var(--text-muted);font-size:12px;margin-top:2px}
+.review-admin-actions{display:flex;gap:8px;margin-top:12px}
+.review-admin-actions button{
+  flex:1;padding:8px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;
+}
+.btn-approve{background:rgba(87,242,135,0.15);color:#57f287}
+.btn-reject{background:rgba(237,66,69,0.15);color:#ed4245}
+.review-pending-badge{
+  display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px;
+  background:rgba(255,193,7,0.15);color:var(--accent);margin-left:8px;
+}
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "IKC Development",
+  "description": "Web uygulama, mobil uygulama, UI/UX tasarım, e-ticaret ve API geliştirme hizmetleri.",
+  "url": "https://ikc-development.web.app/",
+  "email": "ikcdevelopment@gmail.com",
+  "telephone": "+905551234567",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "İstanbul",
+    "addressCountry": "TR"
+  },
+  "priceRange": "₺₺"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"Bir proje ne kadar sürede tamamlanır?","acceptedAnswer":{"@type":"Answer","text":"Proje kapsamına göre değişir; basit bir web sitesi 3-5 gün, kapsamlı bir mobil uygulama 2-4 hafta içinde tamamlanabilir."}},
+    {"@type":"Question","name":"Fiyatlandırma nasıl belirleniyor?","acceptedAnswer":{"@type":"Answer","text":"Fiyat, projenin kapsamına, kullanılacak teknolojilere ve teslim süresine göre belirlenir."}},
+    {"@type":"Question","name":"Proje sonrası destek veriyor musunuz?","acceptedAnswer":{"@type":"Answer","text":"Evet, teslim sonrası hata düzeltme ve küçük güncellemeler için destek sağlanır."}},
+    {"@type":"Question","name":"Sadece mobil uygulama mı geliştiriyorsunuz?","acceptedAnswer":{"@type":"Answer","text":"Hayır, web uygulamaları, UI/UX tasarım, e-ticaret çözümleri, API geliştirme ve teknik danışmanlık hizmetleri de sunulur."}},
+    {"@type":"Question","name":"Ödeme nasıl yapılıyor?","acceptedAnswer":{"@type":"Answer","text":"Genellikle proje başında ön ödeme, teslimde kalan tutar şeklinde ilerlenir."}}
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -1828,7 +1986,43 @@ footer{
 
 <div class="divider"></div>
 
-<!-- Blog Section -->
+<!-- Testimonials Section -->
+<section id="testimonials">
+  <div class="section-container">
+    <div class="section-header animate-on-scroll">
+      <div class="section-tag">Yorumlar</div>
+      <h2 class="section-title">Müşterilerimiz Ne Diyor?</h2>
+      <p class="section-subtitle">Birlikte çalıştığımız kişilerin gerçek deneyimleri.</p>
+    </div>
+    <div class="testimonials-grid" id="testimonials-grid">
+      <div class="blog-empty" id="testimonials-empty">Henüz onaylanmış yorum yok.</div>
+    </div>
+
+    <div class="review-form-card">
+      <h3 id="review-form-title">Deneyiminizi Paylaşın</h3>
+      <div class="form-group">
+        <label class="form-label">Adınız (herkese görünür)</label>
+        <input type="text" id="rv-name" class="form-input" maxlength="40">
+      </div>
+      <div class="form-group">
+        <label class="form-label">E-posta (sadece bizde kalır, gösterilmez)</label>
+        <input type="email" id="rv-email" class="form-input">
+      </div>
+      <div class="star-picker" id="rv-stars">
+        <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Yorumunuz</label>
+        <textarea id="rv-text" class="form-textarea" style="min-height:100px" maxlength="500"></textarea>
+      </div>
+      <button type="button" class="btn-primary" style="width:100%" onclick="submitReview()">
+        <span id="rv-submit-text">Yorumu Gönder</span>
+      </button>
+      <div class="review-status" id="rv-status"></div>
+      <p class="review-note">Yorumunuz, yayınlanmadan önce tarafımızca incelenir.</p>
+    </div>
+  </div>
+</section>
 <section id="blog">
   <div class="section-container">
     <div class="section-header animate-on-scroll">
@@ -1847,7 +2041,53 @@ footer{
 
 <div class="divider"></div>
 
-<!-- Contact Section -->
+<!-- FAQ Section -->
+<section id="faq">
+  <div class="section-container">
+    <div class="section-header animate-on-scroll">
+      <div class="section-tag">SSS</div>
+      <h2 class="section-title">Sıkça Sorulan Sorular</h2>
+      <p class="section-subtitle">Merak ettiklerinize hızlıca göz atın.</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <span>Bir proje ne kadar sürede tamamlanır?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer"><div class="faq-answer-inner">Proje kapsamına göre değişir; basit bir web sitesi 3-5 gün, kapsamlı bir mobil uygulama 2-4 hafta içinde tamamlanabilir. İlk görüşmede size net bir zaman planı sunuyorum.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <span>Fiyatlandırma nasıl belirleniyor?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer"><div class="faq-answer-inner">Fiyat, projenin kapsamına, kullanılacak teknolojilere ve teslim süresine göre belirlenir. Hizmetler bölümündeki başlangıç fiyatları referans niteliğindedir, size özel net bir teklif sunarım.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <span>Proje sonrası destek veriyor musunuz?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer"><div class="faq-answer-inner">Evet, teslim sonrası hata düzeltme ve küçük güncellemeler için destek sağlıyorum. Kapsamlı bakım anlaşmaları da mümkün.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <span>Sadece mobil uygulama mı geliştiriyorsunuz?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer"><div class="faq-answer-inner">Hayır, web uygulamaları, UI/UX tasarım, e-ticaret çözümleri, API geliştirme ve teknik danışmanlık hizmetleri de sunuyorum.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          <span>Ödeme nasıl yapılıyor?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-answer"><div class="faq-answer-inner">Genellikle proje başında bir ön ödeme, teslimde ise kalan tutar şeklinde ilerliyoruz. Büyük projelerde aşamalı ödeme planı da yapılabilir.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
 <section id="contact">
   <div class="section-container">
     <div class="section-header animate-on-scroll">
@@ -1869,7 +2109,7 @@ footer{
             <div class="contact-icon">📧</div>
             <div class="contact-details">
               <h4 id="ctc-email-label">Email</h4>
-              <p>contact@ikcdevelopment.com</p>
+              <p>ikcdevelopment@gmail.com</p>
             </div>
           </div>
           
@@ -1947,8 +2187,10 @@ footer{
       <h4 id="footer-company">Şirket</h4>
       <ul class="footer-links">
         <li><a href="#about" id="flink-about">Hakkımda</a></li>
+        <li><a href="#testimonials">Yorumlar</a></li>
         <li><a href="#projects" id="flink-portfolio">Projeler</a></li>
         <li><a href="#blog" id="flink-blog">Blog</a></li>
+        <li><a href="#faq">SSS</a></li>
         <li><a href="#contact" id="flink-contact">İletişim</a></li>
       </ul>
     </div>
@@ -1956,7 +2198,7 @@ footer{
     <div class="footer-section">
       <h4 id="footer-legal">Yasal</h4>
       <ul class="footer-links">
-        <li><a href="javascript:void(0)" id="flink-privacy">Gizlilik Politikası</a></li>
+        <li><a href="gizlilik-politikasi.html" id="flink-privacy">Gizlilik Politikası</a></li>
         <li><a href="javascript:void(0)" id="flink-terms">Kullanım Koşulları</a></li>
         <li><a href="javascript:void(0)" id="flink-cookies">Çerez Politikası</a></li>
       </ul>
@@ -1964,7 +2206,7 @@ footer{
   </div>
   
   <div class="footer-bottom">
-    <p id="footer-copy">© 2025 IKC Development. Tüm hakları saklıdır.</p>
+    <p id="footer-copy">© 2026 IKC Development. Tüm hakları saklıdır.</p>
   </div>
 </footer>
 
@@ -1987,9 +2229,13 @@ footer{
     <div id="admin-login-view">
       <h2 id="admin-login-title">Admin Girişi</h2>
       <div class="form-group" style="margin-top:32px">
+        <label class="form-label" id="admin-email-label">Email</label>
+        <input type="email" id="admin-email" class="form-input" autocomplete="username">
+      </div>
+      <div class="form-group" style="margin-top:16px">
         <label class="form-label" id="admin-pw-label">Şifre</label>
-        <input type="password" id="admin-pw" class="form-input" onkeypress="if(event.key==='Enter')checkPass()">
-        <div class="error-message" id="pw-err">Yanlış şifre!</div>
+        <input type="password" id="admin-pw" class="form-input" autocomplete="current-password" onkeypress="if(event.key==='Enter')checkPass()">
+        <div class="error-message" id="pw-err">Giriş başarısız. Bilgilerinizi kontrol edin.</div>
       </div>
       <button type="button" class="btn-primary" style="width:100%;margin-top:24px" onclick="checkPass()">
         <span id="admin-login-btn">Giriş Yap</span>
@@ -2002,6 +2248,7 @@ footer{
       
       <div class="admin-tabs">
         <button class="admin-tab active" id="tab-blog-btn" onclick="switchTab('blog')">Blog Yazıları</button>
+        <button class="admin-tab" id="tab-reviews-btn" onclick="switchTab('reviews')">Yorumlar <span id="reviews-pending-count"></span></button>
         <button class="admin-tab" id="tab-prj-btn" onclick="switchTab('prj')">Projeler</button>
         <button class="admin-tab" id="tab-srv-btn" onclick="switchTab('srv')">Hizmetler</button>
         <button class="admin-tab" id="tab-about-btn" onclick="switchTab('about')">Hakkımda</button>
@@ -2030,6 +2277,15 @@ footer{
           </button>
           
           <div class="admin-list" id="admin-post-list"></div>
+        </div>
+      </div>
+
+      <!-- Reviews Tab -->
+      <div id="tab-reviews" style="display:none">
+        <div class="admin-section">
+          <h3>Kullanıcı Yorumları</h3>
+          <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px">E-posta adresleri sadece burada, size özel görünür. Onayladığınız yorumlar sitede "Müşterilerimiz Ne Diyor?" bölümünde yayınlanır.</p>
+          <div class="admin-list" id="admin-reviews-list"></div>
         </div>
       </div>
       
@@ -2166,7 +2422,7 @@ footer{
           
           <div class="form-group">
             <label class="form-label">Email</label>
-            <input type="email" id="contact-email" class="form-input" value="contact@ikcdevelopment.com">
+            <input type="email" id="contact-email" class="form-input" value="ikcdevelopment@gmail.com">
           </div>
           
           <div class="form-group">
@@ -2220,6 +2476,7 @@ const EJS_TEMPLATE = "template_qfagthf";
 
 let isEN = false;
 let posts = [];
+let reviews = [];
 let projects = [];
 let services = [];
 let aboutData = null;
@@ -2511,6 +2768,192 @@ function toggleLang() {
 // ═══════════════════════════════════════════════════════════════
 // BLOG FUNCTIONS
 // ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// REVIEWS (USER RATINGS)
+// ═══════════════════════════════════════════════════════════════
+let selectedStars = 0;
+
+function initStarPicker() {
+  const picker = document.getElementById('rv-stars');
+  if (!picker) return;
+  picker.querySelectorAll('span').forEach(star => {
+    star.addEventListener('click', () => {
+      selectedStars = parseInt(star.dataset.v);
+      picker.querySelectorAll('span').forEach(s => {
+        s.classList.toggle('filled', parseInt(s.dataset.v) <= selectedStars);
+      });
+    });
+  });
+}
+document.addEventListener('DOMContentLoaded', initStarPicker);
+
+function submitReview() {
+  const name = document.getElementById('rv-name').value.trim();
+  const email = document.getElementById('rv-email').value.trim();
+  const text = document.getElementById('rv-text').value.trim();
+  const status = document.getElementById('rv-status');
+  const submitText = document.getElementById('rv-submit-text');
+
+  status.className = 'review-status';
+  status.style.display = 'none';
+
+  if (!name || !email || !text || !selectedStars) {
+    status.className = 'review-status error';
+    status.textContent = 'Lütfen adınızı, e-postanızı, puanınızı ve yorumunuzu girin.';
+    return;
+  }
+  if (!window._firebaseReady) {
+    status.className = 'review-status error';
+    status.textContent = 'Servis şu an kullanılamıyor, lütfen tekrar deneyin.';
+    return;
+  }
+
+  submitText.textContent = 'Gönderiliyor...';
+
+  window._addDoc(window._col(window._db, 'reviews'), {
+    name, rating: selectedStars, comment: text,
+    approved: false, createdAt: window._serverTimestamp()
+  }).then(ref => {
+    return window._setDoc(window._doc(window._db, 'review-emails', ref.id), { email });
+  }).then(() => {
+    status.className = 'review-status success';
+    status.textContent = 'Teşekkürler! Yorumunuz incelendikten sonra yayınlanacak.';
+    document.getElementById('rv-name').value = '';
+    document.getElementById('rv-email').value = '';
+    document.getElementById('rv-text').value = '';
+    selectedStars = 0;
+    document.querySelectorAll('#rv-stars span').forEach(s => s.classList.remove('filled'));
+  }).catch(e => {
+    status.className = 'review-status error';
+    status.textContent = 'Bir hata oluştu, lütfen tekrar deneyin.';
+    console.error('Review error:', e);
+  }).finally(() => {
+    submitText.textContent = 'Yorumu Gönder';
+  });
+}
+
+function loadReviews() {
+  if (!window._firebaseReady) {
+    document.addEventListener('firebaseReady', loadReviews, { once: true });
+    return;
+  }
+  const q = window._query(
+    window._col(window._db, 'reviews'),
+    window._where('approved', '==', true),
+    window._orderBy('createdAt', 'desc')
+  );
+  window._getDocs(q).then(snap => {
+    reviews = [];
+    snap.forEach(d => reviews.push({ id: d.id, ...d.data() }));
+    renderTestimonials();
+  }).catch(e => {
+    console.error('Reviews load error:', e);
+    renderTestimonials();
+  });
+}
+
+function renderTestimonials() {
+  const grid = document.getElementById('testimonials-grid');
+  const empty = document.getElementById('testimonials-empty');
+  if (!grid) return;
+
+  if (!reviews.length) {
+    grid.innerHTML = `<div class="blog-empty">${empty ? empty.textContent : 'Henüz onaylanmış yorum yok.'}</div>`;
+    return;
+  }
+
+  grid.innerHTML = reviews.map(r => `
+    <div class="testimonial-card animate-on-scroll scale-in">
+      <div class="testimonial-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+      <p class="testimonial-text">${escapeHtml(r.comment)}</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">${escapeHtml(r.name.charAt(0).toUpperCase())}</div>
+        <div>
+          <div class="testimonial-name">${escapeHtml(r.name)}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function renderAdminReviewsList() {
+  const list = document.getElementById('admin-reviews-list');
+  if (!list) return;
+  list.innerHTML = `<p style="color:var(--text-muted);font-size:13px">Yükleniyor...</p>`;
+
+  const q = window._query(
+    window._col(window._db, 'reviews'),
+    window._orderBy('createdAt', 'desc')
+  );
+
+  window._getDocs(q).then(async snap => {
+    const all = [];
+    snap.forEach(d => all.push({ id: d.id, ...d.data() }));
+
+    const pendingCount = all.filter(r => !r.approved).length;
+    const badge = document.getElementById('reviews-pending-count');
+    if (badge) badge.textContent = pendingCount > 0 ? `(${pendingCount})` : '';
+
+    if (!all.length) {
+      list.innerHTML = `<p style="color:var(--text-muted);font-size:13px;margin-top:16px">Henüz yorum yok.</p>`;
+      return;
+    }
+
+    // Fetch emails in parallel (admin-only readable collection)
+    const withEmails = await Promise.all(all.map(async r => {
+      try {
+        const emailDoc = await window._getDoc(window._doc(window._db, 'review-emails', r.id));
+        return { ...r, email: emailDoc.exists() ? emailDoc.data().email : '—' };
+      } catch {
+        return { ...r, email: '—' };
+      }
+    }));
+
+    list.innerHTML = withEmails.map(r => `
+      <div class="review-admin-item">
+        <div class="review-admin-top">
+          <div>
+            <div><strong>${escapeHtml(r.name)}</strong>${!r.approved ? '<span class="review-pending-badge">Onay Bekliyor</span>' : ''}</div>
+            <div class="review-admin-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+            <div class="review-admin-email">${escapeHtml(r.email)}</div>
+          </div>
+        </div>
+        <div style="font-size:14px;color:var(--text-secondary);line-height:1.6">${escapeHtml(r.comment)}</div>
+        <div class="review-admin-actions">
+          ${!r.approved ? `<button class="btn-approve" onclick="approveReview('${r.id}')">Onayla</button>` : `<button class="btn-approve" onclick="unapproveReview('${r.id}')">Yayından Kaldır</button>`}
+          <button class="btn-reject" onclick="deleteReview('${r.id}')">Sil</button>
+        </div>
+      </div>
+    `).join('');
+  }).catch(e => {
+    console.error('Admin reviews error:', e);
+    list.innerHTML = `<p style="color:var(--text-muted);font-size:13px">Yorumlar yüklenemedi.</p>`;
+  });
+}
+
+function approveReview(id) {
+  window._updateDoc(window._doc(window._db, 'reviews', id), { approved: true })
+    .then(() => { renderAdminReviewsList(); loadReviews(); });
+}
+
+function unapproveReview(id) {
+  window._updateDoc(window._doc(window._db, 'reviews', id), { approved: false })
+    .then(() => { renderAdminReviewsList(); loadReviews(); });
+}
+
+function deleteReview(id) {
+  if (!confirm('Bu yorumu silmek istiyor musun?')) return;
+  window._deleteDoc(window._doc(window._db, 'reviews', id))
+    .then(() => window._deleteDoc(window._doc(window._db, 'review-emails', id)).catch(() => {}))
+    .then(() => { renderAdminReviewsList(); loadReviews(); });
+}
+
 function loadPosts() {
   if (!window._firebaseReady) {
     console.log('⏳ Waiting for Firebase...');
@@ -2690,8 +3133,8 @@ function sendEmail(e) {
       document.getElementById('contact-form').reset();
       
       setTimeout(() => {
-        status.style.display = 'none';
-      }, 5000);
+        window.location.href = 'tesekkurler.html';
+      }, 1200);
     }).catch(err => {
       status.className = 'form-status error';
       status.textContent = isEN ? 'Failed to send message. Please try again.' : 'Mesaj gönderilemedi. Lütfen tekrar deneyin.';
@@ -2723,6 +3166,9 @@ function openAdmin() {
 
 function closeAdmin() {
   document.getElementById('admin-bg').classList.remove('open');
+  if (window._firebaseReady && window._auth.currentUser) {
+    window._signOut(window._auth);
+  }
 }
 
 function closeAdminIfBg(e) {
@@ -2732,14 +3178,28 @@ function closeAdminIfBg(e) {
 }
 
 function checkPass() {
+  const email = document.getElementById('admin-email').value.trim();
   const pw = document.getElementById('admin-pw').value;
-  if (pw === window._ADMIN_PASS) {
-    document.getElementById('admin-login-view').style.display = 'none';
-    document.getElementById('admin-panel-view').style.display = 'block';
-    renderAdminList();
-  } else {
-    document.getElementById('pw-err').style.display = 'block';
+  const errEl = document.getElementById('pw-err');
+  errEl.style.display = 'none';
+
+  if (!window._firebaseReady) {
+    errEl.textContent = isEN ? 'Firebase not ready.' : 'Firebase hazır değil.';
+    errEl.style.display = 'block';
+    return;
   }
+
+  window._signIn(window._auth, email, pw)
+    .then(() => {
+      document.getElementById('admin-login-view').style.display = 'none';
+      document.getElementById('admin-panel-view').style.display = 'block';
+      renderAdminList();
+      renderAdminReviewsList();
+    })
+    .catch(() => {
+      errEl.textContent = isEN ? 'Login failed. Check your credentials.' : 'Giriş başarısız. Bilgilerinizi kontrol edin.';
+      errEl.style.display = 'block';
+    });
 }
 
 function publishPost() {
@@ -2895,6 +3355,7 @@ function deleteProject(id) {
 
 function switchTab(tab) {
   document.getElementById('tab-blog').style.display = tab === 'blog' ? 'block' : 'none';
+  document.getElementById('tab-reviews').style.display = tab === 'reviews' ? 'block' : 'none';
   document.getElementById('tab-prj').style.display = tab === 'prj' ? 'block' : 'none';
   document.getElementById('tab-srv').style.display = tab === 'srv' ? 'block' : 'none';
   document.getElementById('tab-about').style.display = tab === 'about' ? 'block' : 'none';
@@ -2902,12 +3363,14 @@ function switchTab(tab) {
   document.getElementById('tab-burkut').style.display = tab === 'burkut' ? 'block' : 'none';
 
   document.getElementById('tab-blog-btn').classList.toggle('active', tab === 'blog');
+  document.getElementById('tab-reviews-btn').classList.toggle('active', tab === 'reviews');
   document.getElementById('tab-prj-btn').classList.toggle('active', tab === 'prj');
   document.getElementById('tab-srv-btn').classList.toggle('active', tab === 'srv');
   document.getElementById('tab-about-btn').classList.toggle('active', tab === 'about');
   document.getElementById('tab-contact-btn').classList.toggle('active', tab === 'contact');
   document.getElementById('tab-burkut-btn').classList.toggle('active', tab === 'burkut');
 
+  if (tab === 'reviews') renderAdminReviewsList();
   if (tab === 'prj') renderAdminPrjList();
   if (tab === 'srv') renderAdminSrvList();
   if (tab === 'about') fillAboutForm();
@@ -3341,6 +3804,7 @@ document.addEventListener('DOMContentLoaded', () => {
     emailjs.init({ publicKey: EJS_PUBLIC });
   }
   loadPosts();
+  loadReviews();
   loadProjects();
   loadServices();
   loadAbout();
@@ -3350,6 +3814,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('firebaseReady', () => {
   loadPosts();
+  loadReviews();
   loadProjects();
   loadServices();
   loadAbout();
@@ -3537,6 +4002,10 @@ document.addEventListener('firebaseReady', () => {
   });
 })();
 </script>
+
+<div class="sticky-cta">
+  <a href="tel:+905551234567">📞 Hemen Ara</a>
+</div>
 
 </body>
 </html>
